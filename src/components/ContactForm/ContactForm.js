@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // import { addContact } from '../../redux/contactsSlice';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -10,7 +10,7 @@ export const ContactForm = () => {
   const [number, setNumber] = useState('');
   const entities = useSelector(contactsSelector);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const handleChange = event => {
     const { name, value } = event.target;
     switch (name) {

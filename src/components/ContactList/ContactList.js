@@ -14,6 +14,9 @@ export const ContactList = () => {
         entity.name.toLowerCase().includes(filter.toLowerCase())
       )
     : contacts.entities;
+  console.log('filteredContacts', filteredContacts);
+  console.log('contacts.entities', contacts.entities);
+
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
