@@ -1,4 +1,5 @@
-import { fetchContactsAll } from '../services/contactsApi';
+import { fetchContactsAll, removeContact } from '../services/contactsApi';
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 // import {
 //   fetchContactsRequest,
@@ -15,7 +16,18 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 //     dispatch(fetchContactsError());
 //   }
 // };
+
 export const fetchContacts = createAsyncThunk('contacts/fetchAll', async () => {
   const contacts = await fetchContactsAll();
   return contacts;
 });
+
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContact',
+  async (contactId, { dispatch }) => {
+    await removeContact(contactId);
+
+    dispatch(fetchContacts());
+    return contactId;
+  }
+);
