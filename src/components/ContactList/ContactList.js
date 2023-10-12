@@ -1,26 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import { ContactItem } from 'components/ContactItem/ContactItem';
-import { filterSelector, contactsSelector } from 'redux/selectors';
-import { fetchContacts } from '../../redux/operations';
+import { selectVisibleContacts } from 'redux/selectors';
+
 import css from './ContactList.module.css';
 
 export const ContactList = () => {
-  const filter = useSelector(filterSelector);
-  const contacts = useSelector(contactsSelector);
-
-  const dispatch = useDispatch();
-  const filteredContacts = filter
-    ? contacts.entities.filter(entity =>
-        entity.name.toLowerCase().includes(filter.toLowerCase())
-      )
-    : contacts.entities;
-  console.log('filteredContacts', filteredContacts);
-  console.log('contacts.entities', contacts.entities);
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+  const filteredContacts = useSelector(selectVisibleContacts);
 
   return (
     <ul className={css.contactList}>

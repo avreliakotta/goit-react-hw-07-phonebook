@@ -1,14 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { contactsInitialState } from './initialState';
-// import { nanoid } from 'nanoid';
-import { deleteContact, fetchContacts } from './operations';
-// const handlePanding = state => {
-//   state.isLoading = true;
-// };
-// const handleRejected = (state, { payload }) => {
-//   state.isLoading = false;
-//   state.error = payload;
-// };
+
+import { deleteContact, fetchContacts, addContact } from './thunks';
+import {
+  handlePanding,
+  handleFulfilled,
+  handleRejected,
+} from '../.helpers/helpers';
 
 const contactsSlice = createSlice({
   name: 'contacts',
@@ -16,29 +14,26 @@ const contactsSlice = createSlice({
 
   extraReducers: builder => {
     builder
-      .addCase(fetchContacts.pending, state => {
-        state.isLoading = true;
-      })
+      .addCase(fetchContacts.pending, handlePanding)
 
       .addCase(fetchContacts.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         state.contacts.entities = payload;
       })
-      .addCase(fetchContacts.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      })
-      .addCase(deleteContact.pending, state => {
-        state.isLoading = true;
-      })
+      .addCase(fetchContacts.rejected, handleRejected)
 
-      .addCase(deleteContact.fulfilled, (state, { payload }) => {
+      .addCase(deleteContact.pending, handlePanding)
+
+      .addCase(deleteContact.fulfilled, handleFulfilled)
+      .addCase(deleteContact.rejected, handleRejected)
+
+      .addCase(addContact.pending, handlePanding)
+
+      .addCase(addContact.fulfilled, (state, { payload }) => {
         state.isLoading = false;
+        state.contacts.entities.push(payload);
       })
-      .addCase(deleteContact.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error;
-      });
+      .addCase(addContact.rejected, handleRejected);
   },
 });
 

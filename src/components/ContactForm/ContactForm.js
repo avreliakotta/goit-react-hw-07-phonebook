@@ -1,44 +1,52 @@
-import { useSelector } from 'react-redux';
-// import { addContact } from '../../redux/contactsSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
-import { contactsSelector } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
+import { addContact } from 'redux/thunks';
 import css from './ContactForm.module.css';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-  const entities = useSelector(contactsSelector);
+  const [phone, setPhone] = useState('');
+  const contacts = useSelector(selectContacts);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const handleChange = event => {
     const { name, value } = event.target;
     switch (name) {
       case 'name':
         setName(value);
         break;
-      case 'number':
-        setNumber(value);
+      case 'phone':
+        setPhone(value);
         break;
       default:
         return;
     }
   };
   const nameId = nanoid();
-  const numberId = nanoid();
+  const phoneId = nanoid();
+
   const handleSubmit = event => {
     event.preventDefault();
     const isContactExists =
-      entities && entities.find(entity => entity.name === name);
+      contacts.entities &&
+      contacts.entities.find(entity => entity.name === name);
     if (isContactExists) {
       alert(`${name} is already in contacts.`);
       return;
     }
-    //   const newContact = { id: nanoid(), name, number };
 
-    //   dispatch(addContact(newContact));
-    //   setName('');
-    //   setNumber('');
+    const newContact = {
+      createdAt: new Date().toISOString(),
+      name,
+      phone,
+      id: nanoid(),
+    };
+    dispatch(addContact(newContact));
+    setName('');
+    setPhone('');
   };
 
   return (
@@ -59,10 +67,10 @@ export const ContactForm = () => {
       </label>
       <label className={css.label}>
         <input
-          id={numberId}
+          id={phoneId}
           type="tel"
-          name="number"
-          value={number}
+          name="phone"
+          value={phone}
           pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required

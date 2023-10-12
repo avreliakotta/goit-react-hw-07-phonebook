@@ -1,57 +1,28 @@
-// import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ContactForm } from 'components/ContactForm/ContactForm';
+import { useDispatch, useSelector } from 'react-redux';
 import { ContactList } from 'components/ContactList/ContactList';
 import { Filter } from 'components/Filter/Filter';
+import { fetchContacts } from '../../redux/thunks';
+import { selectIsLoading, selectError } from 'redux/selectors';
 import css from './App.module.css';
 
 export const App = () => {
-  // const [contacts, setContacts] = useState(
-  //   () => JSON.parse(window.localStorage.getItem('contacts')) ?? []
-  // );
-  // const [filter, setFilter] = useState('');
-
-  // useEffect(() => {
-  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
-  // const addContacts = ({ name, number }) => {
-  //   const contact = {
-  //     id: nanoid(),
-  //     name,
-  //     number,
-  //   };
-  // const isExist = contacts.find(el => el.name === contact.name);
-  // if (isExist) {
-  //   alert(`${name} is already in contacts.`);
-  //   return;
-  // }
-
-  // setContacts(prevContacts => [...prevContacts, contact]);
-
-  // const deleteContact = id => {
-  //   setContacts(prevContacts =>
-  //     prevContacts.filter(contact => contact.id !== id)
-  //   );
-  // };
-
-  // const filterContacts = filter => {
-  //   if (filter.trim() === '') {
-  //     setFilter('');
-  //   } else {
-  //     setFilter(filter);
-  //   }
-  // };
-  // const filteredContacts = filter
-  //   ? contacts.filter(contact =>
-  //       contact.name.toLowerCase().includes(filter.toLowerCase())
-  //     )
-  //   : contacts;
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
   return (
     <div className={css.container}>
       <h1 className={css.mainTitle}>Phonebook</h1>
+
       <ContactForm />
       <h2 className={css.contactsTitle}>Contacts</h2>
       <Filter />
+      {isLoading && <b>Request in progress...</b>}
+      {error && <p>{error.message}</p>}
       <ContactList />
     </div>
   );
